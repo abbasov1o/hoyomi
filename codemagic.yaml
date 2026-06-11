@@ -5,7 +5,6 @@
 workflows:
   ios-unsigned:
     name: iOS Unsigned IPA (no secrets)
-    instance_type: mac_mini_m2
     max_build_duration: 90
     environment:
       flutter: stable
