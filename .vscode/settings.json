@@ -1,0 +1,34 @@
+{
+  "cSpell.words": [
+    "animevietsub",
+    "Backlink",
+    "contentsize",
+    "debouncer",
+    "Eiga",
+    "hoyomi",
+    "Iconify",
+    "Kaeru",
+    "referer",
+    "tabbarview",
+    "Toon",
+    "Truyen",
+    "truyengg",
+    "truyenqq",
+    "Vietsub",
+    "wreq"
+  ],
+  "cmake.ignoreCMakeListsMissing": true,
+  "IDX.aI.enableInlineCompletion": true,
+  "IDX.aI.enableCodebaseIndexing": true,
+  "flutterTools.displayGetxContextMenu": true,
+  "flutterTools.displayMobxContextMenu": false,
+  "flutterTools.displayRiverpodContextMenu": false,
+  "flutterTools.displayModularContextMenu": false,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.dart": "${capture}.g.dart, ${capture}.freezed.dart, ${capture}.io.dart, ${capture}.web.dart, ${capture}.stub.dart, ${capture}_stub.dart, ${capture}.ts",
+  },
+  "deno.enablePaths": ["./serverless"],
+  "typescript.experimental.useTsgo": true
+}

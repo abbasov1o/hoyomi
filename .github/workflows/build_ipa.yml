@@ -1,0 +1,65 @@
+name: Build Unsigned IPA (no secrets)
+
+# Manuel tetikleme: GitHub → Actions → "Build Unsigned IPA (no secrets)" → Run workflow.
+# `ios-*` etiketiyle push edince de çalışır (ör: git tag ios-1 && git push --tags).
+# Hiçbir secret / .env / GoogleService-Info.plist GEREKMEZ.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "ios-*"
+
+jobs:
+  build_ipa:
+    name: Build Release IPA (unsigned)
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Install rust iOS target
+        run: rustup target add aarch64-apple-ios
+
+      - uses: flutter-actions/setup-flutter@v4
+        with:
+          channel: stable
+          version: 3.29.3
+
+      # .env zorunlu değil (requireEnvFile: false) ama boş dosyalar her ihtimale karşı oluşturulur.
+      - name: Create empty env files
+        run: |
+          : > .env
+          : > .env.web
+
+      - run: flutter pub get
+
+      - run: pod repo update
+        working-directory: ios
+
+      - name: Build runner (codegen)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+        env:
+          RUSTUP_NO_AUTO_UPDATE: "1"
+
+      - name: Package unsigned IPA
+        working-directory: build/ios/iphoneos
+        run: |
+          mkdir Payload
+          mv Runner.app Payload/
+          zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-iphoneos-release-unsigned
+          path: build/ios/iphoneos/*.ipa
+          if-no-files-found: error

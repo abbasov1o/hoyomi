@@ -1,0 +1,1786 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Hoyomi General API"
+    },
+    "components": {
+        "schemas": {
+            "ComicListWatchHistory": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "created_at": {
+                                    "type": "string",
+                                    "description": "The timestamp when the watch history entry was created."
+                                },
+                                "comic_text_id": {
+                                    "type": "string",
+                                    "description": "The identifier for the specific episode of the text."
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the watch history item (e.g., the episode title)."
+                                },
+                                "original_name": {
+                                    "type": "string"
+                                },
+                                "poster": {
+                                    "type": "string",
+                                    "description": "The URL for the poster image of the episode."
+                                },
+                                "season_name": {
+                                    "type": "string",
+                                    "default": "",
+                                    "description": "The name of the season the episode belongs to."
+                                },
+                                "source_id": {
+                                    "type": "string",
+                                    "description": "The source ID associated with the episode."
+                                },
+                                "watch_cur": {
+                                    "type": "number",
+                                    "description": "The current watch page in seconds."
+                                },
+                                "watch_dur": {
+                                    "type": "number",
+                                    "description": "The total page of the episode in seconds."
+                                },
+                                "watch_id": {
+                                    "type": "string",
+                                    "description": "The unique identifier for the watch session."
+                                },
+                                "watch_name": {
+                                    "type": "string",
+                                    "description": "The name associated with the watch session."
+                                },
+                                "watch_updated_at": {
+                                    "type": "string",
+                                    "description": "The timestamp when the watch history entry was last updated."
+                                }
+                            },
+                            "required": [
+                                "created_at",
+                                "comic_text_id",
+                                "name",
+                                "original_name",
+                                "poster",
+                                "source_id",
+                                "watch_cur",
+                                "watch_dur",
+                                "watch_id",
+                                "watch_name",
+                                "watch_updated_at"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "An array of watch history items. Schema representing an individual watch history item."
+            },
+            "ListWatchPageSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "cur": {
+                                    "type": "number",
+                                    "description": "The current page in the episode in seconds.",
+                                    "example": 120
+                                },
+                                "dur": {
+                                    "type": "number",
+                                    "description": "The total page of the episode in seconds.",
+                                    "example": 1500
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the episode.",
+                                    "example": "Episode 1"
+                                },
+                                "createdAt": {
+                                    "type": "string",
+                                    "description": "Page when the watch page was recorded, in ISO 8601 format.",
+                                    "example": "2025-04-06T12:34:56Z"
+                                },
+                                "updatedAt": {
+                                    "type": "string",
+                                    "description": "Page when the watch page was last updated, in ISO 8601 format.",
+                                    "example": "2025-04-06T13:00:00Z"
+                                },
+                                "chapId": {
+                                    "type": "string",
+                                    "description": "The unique identifier for the chapter within the episode or series.",
+                                    "example": "chap-001"
+                                }
+                            },
+                            "required": [
+                                "cur",
+                                "dur",
+                                "name",
+                                "createdAt",
+                                "updatedAt",
+                                "chapId"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "A list of watch page entries, each representing the page watched for a specific episode."
+            },
+            "WatchPageSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                            "cur": {
+                                "type": "number",
+                                "description": "The current page in seconds for the episode.",
+                                "example": 120
+                            },
+                            "dur": {
+                                "type": "number",
+                                "description": "The total page of the episode in seconds.",
+                                "example": 1500
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the episode.",
+                                "example": "Episode 1"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601 format pagestamp when the watch page was recorded.",
+                                "example": "2025-04-06T12:34:56Z"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "description": "ISO 8601 format pagestamp when the watch page was last updated.",
+                                "example": "2025-04-06T13:00:00Z"
+                            }
+                        },
+                        "required": [
+                            "cur",
+                            "dur",
+                            "name",
+                            "createdAt",
+                            "updatedAt"
+                        ]
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "The watch page object, which can be null if no data is available."
+            },
+            "SetWatchPageBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The unique identifier for the source (e.g., series or season).",
+                        "example": "tonikaku-kawaii-season-2"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the episode.",
+                        "example": "Episode 1"
+                    },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Comic raw name.",
+                        "example": "とにかくかわいい"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL to the poster image for the episode.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "comic_text_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Unique identifier for the comic (movie/show) text.",
+                        "example": "comic-001"
+                    },
+                    "season_name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "description": "The name of the season.",
+                        "example": "Season 1"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
+                    "cur": {
+                        "type": "number",
+                        "description": "The current watch page in seconds.",
+                        "example": 120
+                    },
+                    "dur": {
+                        "type": "number",
+                        "description": "The total page of the episode in seconds.",
+                        "example": 1500
+                    },
+                    "episode_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the episode.",
+                        "example": "Episode 1"
+                    },
+                    "episode_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Unique identifier for the episode.",
+                        "example": "episode-001"
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "name",
+                    "original_name",
+                    "poster",
+                    "comic_text_id",
+                    "status",
+                    "cur",
+                    "dur",
+                    "episode_name",
+                    "episode_id"
+                ]
+            },
+            "HasFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "has_follow": {
+                        "type": "boolean",
+                        "description": "Whether the user is following this comic."
+                    }
+                },
+                "required": [
+                    "has_follow"
+                ],
+                "description": "Indicates if the user follows the specified comic."
+            },
+            "SetFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "ok": {
+                        "type": "boolean",
+                        "description": "Whether the operation was successful."
+                    }
+                },
+                "required": [
+                    "ok"
+                ],
+                "description": "Indicates if the follow/unfollow operation succeeded."
+            },
+            "SetFollowBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "description": "The unique identifier for the source (e.g., the series or season).",
+                        "example": "tonikaku-kawaii-season-2"
+                    },
+                    "comic_text_id": {
+                        "type": "string",
+                        "description": "The identifier for the specific comic text.",
+                        "example": "ep-01"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Comic name.",
+                        "example": "Tonikaku Kawaii"
+                    },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Comic raw name.",
+                        "example": "とにかくかわいい"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "description": "Poster image URL.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "season_name": {
+                        "type": "string",
+                        "description": "Season name (optional).",
+                        "example": "Season 2"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
+                    "current_chapter_name": {
+                        "type": "string",
+                        "description": "Current chapter name.",
+                        "example": "Chapter 1"
+                    },
+                    "current_chapter_full_name": {
+                        "type": "string",
+                        "description": "Current chapter full name.",
+                        "example": "The Beginning"
+                    },
+                    "current_chapter_id": {
+                        "type": "string",
+                        "description": "Current chapter id.",
+                        "example": "ch-01"
+                    },
+                    "current_chapter_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Current chapter time (ISO string).",
+                        "example": "2024-05-01T12:00:00Z"
+                    },
+                    "value": {
+                        "type": "boolean",
+                        "description": "Set to true to follow, false to unfollow.",
+                        "example": true
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "comic_text_id",
+                    "name",
+                    "original_name",
+                    "poster",
+                    "status",
+                    "current_chapter_name",
+                    "current_chapter_full_name",
+                    "current_chapter_id",
+                    "value"
+                ]
+            },
+            "EigaListWatchHistory": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "created_at": {
+                                    "type": "string",
+                                    "description": "The timestamp when the watch history entry was created."
+                                },
+                                "eiga_text_id": {
+                                    "type": "string",
+                                    "description": "The identifier for the specific episode of the text."
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the watch history item (e.g., the episode title)."
+                                },
+                                "original_name": {
+                                    "type": "string"
+                                },
+                                "poster": {
+                                    "type": "string",
+                                    "description": "The URL for the poster image of the episode."
+                                },
+                                "season_name": {
+                                    "type": "string",
+                                    "default": "",
+                                    "description": "The name of the season the episode belongs to."
+                                },
+                                "source_id": {
+                                    "type": "string",
+                                    "description": "The source ID associated with the episode."
+                                },
+                                "watch_cur": {
+                                    "type": "number",
+                                    "description": "The current watch position in seconds."
+                                },
+                                "watch_dur": {
+                                    "type": "number",
+                                    "description": "The total duration of the episode in seconds."
+                                },
+                                "watch_id": {
+                                    "type": "string",
+                                    "description": "The unique identifier for the watch session."
+                                },
+                                "watch_name": {
+                                    "type": "string",
+                                    "description": "The name associated with the watch session."
+                                },
+                                "watch_updated_at": {
+                                    "type": "string",
+                                    "description": "The timestamp when the watch history entry was last updated."
+                                }
+                            },
+                            "required": [
+                                "created_at",
+                                "eiga_text_id",
+                                "name",
+                                "original_name",
+                                "poster",
+                                "source_id",
+                                "watch_cur",
+                                "watch_dur",
+                                "watch_id",
+                                "watch_name",
+                                "watch_updated_at"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "An array of watch history items. Schema representing an individual watch history item."
+            },
+            "ListWatchTimeSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "cur": {
+                                    "type": "number",
+                                    "description": "The current position in the episode in seconds.",
+                                    "example": 120
+                                },
+                                "dur": {
+                                    "type": "number",
+                                    "description": "The total duration of the episode in seconds.",
+                                    "example": 1500
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the episode.",
+                                    "example": "Episode 1"
+                                },
+                                "createdAt": {
+                                    "type": "string",
+                                    "description": "Timestamp when the watch time was recorded, in ISO 8601 format.",
+                                    "example": "2025-04-06T12:34:56Z"
+                                },
+                                "updatedAt": {
+                                    "type": "string",
+                                    "description": "Timestamp when the watch time was last updated, in ISO 8601 format.",
+                                    "example": "2025-04-06T13:00:00Z"
+                                },
+                                "chapId": {
+                                    "type": "string",
+                                    "description": "The unique identifier for the chapter within the episode or series.",
+                                    "example": "chap-001"
+                                }
+                            },
+                            "required": [
+                                "cur",
+                                "dur",
+                                "name",
+                                "createdAt",
+                                "updatedAt",
+                                "chapId"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "A list of watch time entries, each representing the time watched for a specific episode."
+            },
+            "WatchTimeSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                            "cur": {
+                                "type": "number",
+                                "description": "The current time in seconds for the episode.",
+                                "example": 120
+                            },
+                            "dur": {
+                                "type": "number",
+                                "description": "The total duration of the episode in seconds.",
+                                "example": 1500
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the episode.",
+                                "example": "Episode 1"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601 format timestamp when the watch time was recorded.",
+                                "example": "2025-04-06T12:34:56Z"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "description": "ISO 8601 format timestamp when the watch time was last updated.",
+                                "example": "2025-04-06T13:00:00Z"
+                            }
+                        },
+                        "required": [
+                            "cur",
+                            "dur",
+                            "name",
+                            "createdAt",
+                            "updatedAt"
+                        ]
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "The watch time object, which can be null if no data is available."
+            },
+            "SetWatchTimeBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The unique identifier for the source (e.g., series or season).",
+                        "example": "tonikaku-kawaii-season-2"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the episode.",
+                        "example": "Episode 1"
+                    },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Eiga raw name.",
+                        "example": "鬼滅の刃"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL to the poster image for the episode.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "eiga_text_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Unique identifier for the eiga (movie/show) text.",
+                        "example": "eiga-001"
+                    },
+                    "season_name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "description": "The name of the season.",
+                        "example": "Season 1"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
+                    "cur": {
+                        "type": "number",
+                        "description": "The current watch time in seconds.",
+                        "example": 120
+                    },
+                    "dur": {
+                        "type": "number",
+                        "description": "The total duration of the episode in seconds.",
+                        "example": 1500
+                    },
+                    "episode_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the episode.",
+                        "example": "Episode 1"
+                    },
+                    "episode_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Unique identifier for the episode.",
+                        "example": "episode-001"
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "name",
+                    "original_name",
+                    "poster",
+                    "eiga_text_id",
+                    "status",
+                    "cur",
+                    "dur",
+                    "episode_name",
+                    "episode_id"
+                ]
+            },
+            "HasEigaFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "has_follow": {
+                        "type": "boolean",
+                        "description": "Whether the user is following this eiga."
+                    }
+                },
+                "required": [
+                    "has_follow"
+                ],
+                "description": "Indicates if the user follows the specified eiga."
+            },
+            "SetEigaFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "ok": {
+                        "type": "boolean",
+                        "description": "Whether the operation was successful."
+                    }
+                },
+                "required": [
+                    "ok"
+                ],
+                "description": "Indicates if the follow/unfollow operation succeeded."
+            },
+            "SetEigaFollowBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "description": "The unique identifier for the source (e.g., the series or season).",
+                        "example": "kimetsu-no-yaiba"
+                    },
+                    "eiga_text_id": {
+                        "type": "string",
+                        "description": "The identifier for the specific eiga text.",
+                        "example": "ep-01"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Eiga name.",
+                        "example": "Kimetsu no Yaiba"
+                    },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Eiga raw name.",
+                        "example": "鬼滅の刃"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "description": "Poster image URL.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "season_name": {
+                        "type": "string",
+                        "description": "Season name (optional).",
+                        "example": "Season 1"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
+                    "current_episode_name": {
+                        "type": "string",
+                        "description": "Current episode name.",
+                        "example": "Episode 1"
+                    },
+                    "current_episode_id": {
+                        "type": "string",
+                        "description": "Current episode id.",
+                        "example": "ep-01"
+                    },
+                    "current_episode_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Current episode time (ISO string).",
+                        "example": "2024-05-01T12:00:00Z"
+                    },
+                    "value": {
+                        "type": "boolean",
+                        "description": "Set to true to follow, false to unfollow.",
+                        "example": true
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "eiga_text_id",
+                    "name",
+                    "original_name",
+                    "poster",
+                    "status",
+                    "current_episode_name",
+                    "current_episode_id",
+                    "value"
+                ]
+            }
+        },
+        "parameters": {}
+    },
+    "paths": {
+        "/api/comic/get-watch-history": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "minimum": 1,
+                            "description": "The page number for paginated results.",
+                            "example": 1
+                        },
+                        "required": true,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the list of watch history entries for the specified source.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ComicListWatchHistory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/get-watch-page-episodes": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source, typically a string representing the season.",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the comic (movie/show) text. This helps identify the specific content.",
+                            "example": "comic-001"
+                        },
+                        "required": true,
+                        "name": "comic_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the list of watch page episodes based on the provided sourceId and comic_text_id.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListWatchPageSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/get-watch-page": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source, such as the season name or series ID.",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the comic (movie/show) text, used to specify the content.",
+                            "example": "comic-001"
+                        },
+                        "required": true,
+                        "name": "comic_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the specific chapter within the episode or series.",
+                            "example": "chap-001"
+                        },
+                        "required": true,
+                        "name": "chap_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The watch page object, which can be null if no data is available for the requested episode.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WatchPageSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/set-watch-page": {
+            "post": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetWatchPageBodySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The response indicating the success status of setting the watch page.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Indicates whether the watch page was successfully set.",
+                                            "example": true
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/has-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The identifier for the specific comic text.",
+                            "example": "ep-01"
+                        },
+                        "required": true,
+                        "name": "comic_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check if the user follows the specified comic.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HasFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/set-follow": {
+            "post": {
+                "openapi": {
+                    "summary": "Set or unset follow for a comic",
+                    "tags": [
+                        "Comic"
+                    ],
+                    "operationId": "setComicFollow"
+                },
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetFollowBodySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set or unset follow for the specified comic.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/get-list-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "Filter by sourceId (optional)",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": false,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ongoing",
+                                "completed",
+                                "cancelled",
+                                "unknown",
+                                "on_hiatus",
+                                "publishing_finished"
+                            ],
+                            "description": "Filter by comic status (e.g., ongoing, completed)",
+                            "example": "ongoing"
+                        },
+                        "required": false,
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "sourceId": {
+                                        "type": "string",
+                                        "description": "Source ID to exclude from results",
+                                        "example": "tonikaku-kawaii-season-2"
+                                    },
+                                    "comic_text_id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "description": "Comic text ID to exclude from results",
+                                        "example": "comic-001"
+                                    }
+                                },
+                                "required": [
+                                    "sourceId",
+                                    "comic_text_id"
+                                ]
+                            },
+                            "description": "List of comics to ignore from the follow result",
+                            "example": [
+                                {
+                                    "sourceId": "tonikaku-kawaii-season-2",
+                                    "comic_text_id": "comic-001"
+                                }
+                            ]
+                        },
+                        "required": false,
+                        "name": "ignore",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1,
+                            "description": "Current page number",
+                            "example": 1
+                        },
+                        "required": false,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Number of items per page",
+                            "example": 20
+                        },
+                        "required": false,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of comics followed by the user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2024-05-01T12:00:00Z"
+                                                    },
+                                                    "comic_text_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "original_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "poster": {
+                                                        "type": "string"
+                                                    },
+                                                    "season_name": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "source_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "chapter_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "chapter_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "chapter_time": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "required": [
+                                                    "created_at",
+                                                    "comic_text_id",
+                                                    "name",
+                                                    "original_name",
+                                                    "poster",
+                                                    "season_name",
+                                                    "source_id",
+                                                    "chapter_name",
+                                                    "chapter_id",
+                                                    "chapter_time"
+                                                ]
+                                            }
+                                        },
+                                        "totalItems": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "totalPages": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "items",
+                                        "totalItems",
+                                        "page",
+                                        "totalPages"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/get-watch-history": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "minimum": 1,
+                            "description": "The page number for paginated results.",
+                            "example": 1
+                        },
+                        "required": true,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the list of watch history entries for the specified source.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EigaListWatchHistory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/get-watch-time-episodes": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source, typically a string representing the season.",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the eiga (movie/show) text. This helps identify the specific content.",
+                            "example": "eiga-001"
+                        },
+                        "required": true,
+                        "name": "eiga_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the list of watch time episodes based on the provided sourceId and eiga_text_id.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListWatchTimeSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/get-watch-time": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source, such as the season name or series ID.",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the eiga (movie/show) text, used to specify the content.",
+                            "example": "eiga-001"
+                        },
+                        "required": true,
+                        "name": "eiga_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the specific chapter within the episode or series.",
+                            "example": "chap-001"
+                        },
+                        "required": true,
+                        "name": "chap_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The watch time object, which can be null if no data is available for the requested episode.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WatchTimeSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/set-watch-time": {
+            "post": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetWatchTimeBodySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The response indicating the success status of setting the watch time.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Indicates whether the watch time was successfully set.",
+                                            "example": true
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/has-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "kimetsu-no-yaiba"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The identifier for the specific eiga text.",
+                            "example": "ep-01"
+                        },
+                        "required": true,
+                        "name": "eiga_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check if the user follows the specified eiga.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HasEigaFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/set-follow": {
+            "post": {
+                "openapi": {
+                    "summary": "Set or unset follow for an eiga",
+                    "tags": [
+                        "Eiga"
+                    ],
+                    "operationId": "setEigaFollow"
+                },
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetEigaFollowBodySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set or unset follow for the specified eiga.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetEigaFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/get-list-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "Filter by sourceId (optional)",
+                            "example": "some-eiga-source-id"
+                        },
+                        "required": false,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ongoing",
+                                "completed",
+                                "cancelled",
+                                "unknown",
+                                "on_hiatus",
+                                "publishing_finished"
+                            ],
+                            "description": "Filter by the status of the eiga (e.g., ongoing, completed)",
+                            "example": "ongoing"
+                        },
+                        "required": false,
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "sourceId": {
+                                        "type": "string",
+                                        "description": "Source ID to exclude from the result (optional)",
+                                        "example": "tonikaku-kawaii-season-2"
+                                    },
+                                    "eiga_text_id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "description": "Unique identifier for the eiga to exclude",
+                                        "example": "comic-001"
+                                    }
+                                },
+                                "required": [
+                                    "sourceId",
+                                    "eiga_text_id"
+                                ]
+                            },
+                            "description": "List of eiga entries to ignore in the follow result",
+                            "example": [
+                                {
+                                    "sourceId": "tonikaku-kawaii-season-2",
+                                    "eiga_text_id": "comic-001"
+                                }
+                            ]
+                        },
+                        "required": false,
+                        "name": "ignore",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1,
+                            "description": "Current page number",
+                            "example": 1
+                        },
+                        "required": false,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Number of items per page",
+                            "example": 20
+                        },
+                        "required": false,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of followed eiga",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2024-05-01T12:00:00Z"
+                                                    },
+                                                    "eiga_text_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "original_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "poster": {
+                                                        "type": "string"
+                                                    },
+                                                    "season_name": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "source_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "episode_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "episode_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "episode_time": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "required": [
+                                                    "created_at",
+                                                    "eiga_text_id",
+                                                    "name",
+                                                    "original_name",
+                                                    "poster",
+                                                    "season_name",
+                                                    "source_id",
+                                                    "episode_name",
+                                                    "episode_id",
+                                                    "episode_time"
+                                                ]
+                                            }
+                                        },
+                                        "totalItems": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "totalPages": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "items",
+                                        "totalItems",
+                                        "page",
+                                        "totalPages"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
