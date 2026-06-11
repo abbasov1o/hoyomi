@@ -1,40 +1,29 @@
-# Codemagic CI — secret gerektirmeyen, imzasız (unsigned) iOS IPA üretir.
-# Kurulum: https://codemagic.io → GitHub ile giriş → bu repoyu ekle →
-#          "ios-unsigned" workflow'unu seç → Start new build.
-# Sonuç: Artifacts altında app-iphoneos-release-unsigned.ipa
+# Codemagic CI — şifrə tələb etməyən, imzasız (unsigned) iOS IPA istehsal edir.
 workflows:
   ios-unsigned:
     name: iOS Unsigned IPA (no secrets)
-    max_build_duration: 90
+    max_build_duration: 60
     environment:
       flutter: stable
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Boş env dosyalari (.env zorunlu degil)
+      - name: Boş env faylları yarat
         script: |
           : > .env
           : > .env.web
-      - name: Rust + iOS target kur
-        script: |
-          if ! command -v rustc >/dev/null 2>&1; then
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          fi
-          echo "PATH=$HOME/.cargo/bin:$PATH" >> "$CM_ENV"
-          source "$HOME/.cargo/env"
-          rustup target add aarch64-apple-ios
-      - name: flutter pub get
+      - name: Flutter pub get
         script: flutter pub get
-      - name: pod repo update
+      - name: Pod repo update
         script: cd ios && pod repo update
-      - name: build_runner (codegen)
+      - name: Build runner (codegen)
         script: dart run build_runner build --delete-conflicting-outputs
       - name: Build & package unsigned IPA
         script: |
           flutter build ios --release --no-codesign
           cd build/ios/iphoneos
-          mkdir Payload
-          mv Runner.app Payload/
+          mkdir -p Payload
+          cp -r Runner.app Payload/
           zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
     artifacts:
       - build/ios/iphoneos/*.ipa
