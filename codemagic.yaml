@@ -1,29 +1,55 @@
-# Codemagic CI — şifrə tələb etməyən, imzasız (unsigned) iOS IPA istehsal edir.
+# Codemagic CI — secret gerektirmeyen, imzasız (unsigned) iOS IPA.
+# Cihaz (iphoneos / arm64) için derler; jailbreak'li cihaza TrollStore/appinst ile kurulur.
+# Kurulum: codemagic.io → GitHub ile gir → bu repoyu ekle →
+#          konfigürasyon kaynağı = codemagic.yaml → workflow "ios-unsigned" → Start build.
 workflows:
   ios-unsigned:
-    name: iOS Unsigned IPA (no secrets)
+    name: iOS Unsigned IPA (device, no secrets)
+    instance_type: mac_mini_m1
     max_build_duration: 60
     environment:
       flutter: stable
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Boş env faylları yarat
+      - name: Swift Package Manager'i kapat (eklentiler SPM desteklemiyor)
+        script: |
+          flutter config --no-enable-swift-package-manager
+
+      - name: Bos env dosyalari (.env zorunlu degil)
         script: |
           : > .env
           : > .env.web
-      - name: Flutter pub get
+
+      - name: Rust + iOS target kur
+        script: |
+          if ! command -v rustc >/dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          fi
+          echo "PATH=$HOME/.cargo/bin:$PATH" >> "$CM_ENV"
+          source "$HOME/.cargo/env"
+          rustup target add aarch64-apple-ios
+
+      - name: flutter pub get
         script: flutter pub get
-      - name: Pod repo update
-        script: cd ios && pod repo update
-      - name: Build runner (codegen)
+
+      - name: build_runner (codegen - env.g.dart vb. uretir)
         script: dart run build_runner build --delete-conflicting-outputs
-      - name: Build & package unsigned IPA
+
+      - name: CocoaPods
+        script: |
+          cd ios
+          pod install --repo-update
+
+      - name: Build unsigned iOS (device)
         script: |
           flutter build ios --release --no-codesign
+
+      - name: Package -> unsigned IPA
+        script: |
           cd build/ios/iphoneos
           mkdir -p Payload
-          cp -r Runner.app Payload/
+          mv Runner.app Payload/
           zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
     artifacts:
       - build/ios/iphoneos/*.ipa
