@@ -45,11 +45,25 @@ workflows:
         script: |
           flutter build ios --release --no-codesign
 
-      - name: Package -> unsigned IPA
+      - name: Package -> .deb (rootless jailbreak) + unsigned .ipa
         script: |
-          cd build/ios/iphoneos
-          mkdir -p Payload
-          mv Runner.app Payload/
-          zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
+          APP=build/ios/iphoneos/Runner.app
+          # --- unsigned .ipa (TrollStore/appinst icin) ---
+          rm -rf build/ios/iphoneos/Payload
+          mkdir -p build/ios/iphoneos/Payload
+          cp -r "$APP" build/ios/iphoneos/Payload/
+          (cd build/ios/iphoneos && zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload)
+          # --- rootless .deb (Dopamine / palera1n-rootless: /var/jb, iphoneos-arm64) ---
+          # ROOTFUL isen: 'var/jb/Applications' -> 'Applications' ve Architecture -> iphoneos-arm yap.
+          ROOT=debroot
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/var/jb/Applications" "$ROOT/DEBIAN"
+          cp -r "$APP" "$ROOT/var/jb/Applications/Hoyomi.app"
+          printf 'Package: git.shin.hoyomi\nName: Hoyomi\nVersion: 1.0.0\nArchitecture: iphoneos-arm64\nDescription: Hoyomi - OpenAnime\nMaintainer: hoyomi\nAuthor: hoyomi\nSection: Applications\n' > "$ROOT/DEBIAN/control"
+          printf '#!/bin/sh\nuicache -p /var/jb/Applications/Hoyomi.app || uicache -a\nexit 0\n' > "$ROOT/DEBIAN/postinst"
+          chmod 0755 "$ROOT/DEBIAN/postinst"
+          brew list dpkg >/dev/null 2>&1 || brew install dpkg
+          dpkg-deb -Zgzip -b "$ROOT" hoyomi-rootless.deb
     artifacts:
       - build/ios/iphoneos/*.ipa
+      - hoyomi-rootless.deb
